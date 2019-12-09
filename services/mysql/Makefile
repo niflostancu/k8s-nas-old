@@ -9,6 +9,9 @@ install:
 upgrade:
 	helm upgrade "$(DEPLOYMENT_NAME)" stable/mysql -f helm-values.yaml
 
+helm_repo:
+	helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+
 get_password:
 	kubectl get secret --namespace default "$(DEPLOYMENT_NAME)" \
 		-o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
