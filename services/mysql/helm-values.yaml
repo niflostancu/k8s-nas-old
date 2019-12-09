@@ -18,7 +18,7 @@
 ## Additionnal arguments that are passed to the MySQL container.
 ## For example use --default-authentication-plugin=mysql_native_password if older clients need to
 ## connect to a MySQL 8 instance.
-args: []
+args: ['--default-authentication-plugin=mysql_native_password']
 
 extraVolumes: |
   # - name: extras
@@ -31,6 +31,9 @@ extraInitContainers: |
   # - name: do-something
   #   image: busybox
   #   command: ['do', 'something']
+
+# Use the `mysql` secret
+existingSecret: "mysql"
 
 ## Persist data to a persistent volume
 persistence:

@@ -1,7 +1,13 @@
 DEPLOYMENT_NAME=mysql
+SHELL=/bin/bash
 
 install:
+	kubectl create secret generic mysql --namespace default \
+		--from-file=mysql-root-password=<(read -s -p "Enter root password: " p; echo -n "$$p")
 	helm install "$(DEPLOYMENT_NAME)" stable/mysql -f helm-values.yaml
+
+upgrade:
+	helm upgrade "$(DEPLOYMENT_NAME)" stable/mysql -f helm-values.yaml
 
 get_password:
 	kubectl get secret --namespace default "$(DEPLOYMENT_NAME)" \
