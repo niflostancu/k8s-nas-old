@@ -1,2 +1,4 @@
 .vagrant/
+*.local.yaml
+local/
 
