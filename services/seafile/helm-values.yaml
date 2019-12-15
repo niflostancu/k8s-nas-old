@@ -1,0 +1,31 @@
+# Local values for ttrss.
+
+image:
+  repository: niflostancu/seafile
+  tag: "latest"
+  pullPolicy: Always
+
+name: "seafile"
+fullname: "seafile"
+
+databaseHost: "mysql"
+databasePort: "3306"
+databaseType: "mysql"
+databaseUser: "seafile"
+databaseExists: "1"
+databaseSecret:
+  name: "mysql-seafile"
+  key: "mysql-password"
+
+livenessProbe:
+  path: /seafile/
+readinessProbe:
+  path: /seafile/
+
+persistence:
+  enabled: true
+  existingClaim: nebula-seafile
+
+ingress:
+  enabled: false
+

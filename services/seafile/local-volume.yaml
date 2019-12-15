@@ -1,0 +1,42 @@
+---
+# Definition of the volumes and claims used for seafile
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nebula-seafile
+spec:
+  capacity:
+    storage: 500Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    # store inside big raid volumes
+    path: /media/storage/var/lib/seafile
+  claimRef:
+    namespace: default
+    name: nebula-seafile
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - nebula-k8s
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nebula-seafile
+  namespace: default
+spec:
+  storageClassName: "local-storage"
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+
