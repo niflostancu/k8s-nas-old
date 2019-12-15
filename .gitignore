@@ -2,3 +2,5 @@
 *.local.yaml
 local/
 
+/config.local.mk
+

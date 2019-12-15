@@ -7,7 +7,7 @@ scr+='mysql -h mysql'
 
 json_escape() {
   printf '%s' "$1" | \
-    python -c 'import json, sys; print(json.dumps(sys.stdin.read()))'
+    python3 -c 'import json, sys; print(json.dumps(sys.stdin.read()))'
 }
 
 args="-i --tty --rm"
