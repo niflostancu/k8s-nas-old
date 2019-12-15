@@ -1,0 +1,34 @@
+# Local values for ttrss.
+
+image:
+  repository: niflostancu/ttrss
+  tag: "latest"
+  pullPolicy: Always
+
+name: "ttrss"
+fullname: "ttrss"
+
+databaseHost: "mysql"
+databasePort: "3306"
+databaseType: "mysql"
+databaseName: "ttrss"
+databaseUser: "ttrss"
+databaseSecret:
+  name: "mysql-ttrss"
+  key: "mysql-password"
+
+extraVolumes: {}
+  # - name: plugins
+  #   emptyDir: {}
+extraVolumeMounts: {}
+  # - name: extras
+  #   mountPath: /var/www/plugins.local/
+  #   readOnly: true
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+
