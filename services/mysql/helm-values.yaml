@@ -1,5 +1,8 @@
 ## Helm values for stable/mysql
 
+image: mysql
+imageTag: 8
+
 ## Specify password for root user
 ##
 ## Default: random 10 character string
@@ -19,6 +22,7 @@
 ## For example use --default-authentication-plugin=mysql_native_password if older clients need to
 ## connect to a MySQL 8 instance.
 args: ['--default-authentication-plugin=mysql_native_password']
+#args: ['/bin/bash', '-c', 'while true; do sleep 100; done']
 
 extraVolumes: |
   # - name: extras
@@ -46,11 +50,28 @@ resources:
     memory: 256Mi
     cpu: 100m
 
+livenessProbe:
+  initialDelaySeconds: 120
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 50
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
 # Custom mysql configuration files used to override default mysql settings
 configurationFiles:
   mysql.cnf: |-
     [mysqld]
     skip-name-resolve
+    default-authentication-plugin=mysql_native_password
+    innodb_log_checksums=ON
+    # innodb_force_recovery=1
 
 initializationFiles: {}
 
