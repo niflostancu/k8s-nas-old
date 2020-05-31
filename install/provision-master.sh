@@ -2,8 +2,8 @@
 set -e
 
 DOCKER_VERSION=18.09
-K8S_VERSION=1.16.
-CALICO_VERSION=3.10
+K8S_VERSION=1.17.
+CALICO_VERSION=3.13
 NODE_IP_ADDR=$(ip route get 8.8.8.8 | awk -F"src " 'NR==1{split($2,a," ");print a[1]}')
 POD_CIDR=10.88.0.0/16
 
@@ -57,6 +57,10 @@ apt-get update
 _K8S_VERSION=$(find_pkg_version kubeadm "$K8S_VERSION")
 apt-get install -y kubelet kubeadm kubectl
 apt-mark hold kubelet=$_K8S_VERSION kubeadm=$_K8S_VERSION kubectl=$_K8S_VERSION
+
+echo "
+KUBELET_EXTRA_ARGS=--runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice
+" > /etc/default/kubelet
 
 kubeadm init --apiserver-cert-extra-sans=$NODE_IP_ADDR --pod-network-cidr=${POD_CIDR}
 kubeadm version
