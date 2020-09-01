@@ -43,6 +43,14 @@ systemctl daemon-reload
 systemctl restart docker
 systemctl enable docker
 
+# Enable systemd accounting
+mkdir -p /etc/systemd/system.conf.d
+cat <<EOF >/etc/systemd/system.conf.d/kubernetes-accounting.conf
+[Manager]
+DefaultCPUAccounting=yes
+DefaultMemoryAccounting=yes  
+EOF
+
 # system tuneup
 # disable swap
 swapoff -a
