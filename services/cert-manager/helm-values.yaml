@@ -5,6 +5,8 @@ global:
 
 replicaCount: 1
 
+installCRDs: true
+
 # Optional additional arguments
 extraArgs: []
   # Use this flag to set a namespace that cert-manager will use to store
