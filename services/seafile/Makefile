@@ -1,5 +1,5 @@
 DEPLOYMENT_NAME=seafile
-HELM_REPO=local/seafile
+HELM_REPO=../../local/seafile-0.1.tgz
 
 install:
 	helm install "$(DEPLOYMENT_NAME)" "$(HELM_REPO)" \
