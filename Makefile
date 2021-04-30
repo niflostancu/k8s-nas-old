@@ -2,6 +2,10 @@
 
 include config.local.mk
 
+deploy:
+	rsync -avh --rsync-path="mkdir -p ~/k8s-nas/ && rsync" \
+		./ "$(SERVER):k8s-nas"
+
 get_kube_config:
 	@echo "$(KUBECONFIG)"
 

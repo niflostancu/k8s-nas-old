@@ -1,0 +1,7 @@
+write-kubeconfig-mode: "0644"
+disable:
+  - "traefik"
+tls-san:
+  - "nebula.local"
+node-label:
+  - "nas/role=primary"

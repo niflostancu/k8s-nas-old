@@ -1,6 +1,7 @@
 .vagrant/
 *.local.yaml
 local/
+generated/
 
 /config.local.mk
 

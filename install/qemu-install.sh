@@ -1,5 +1,5 @@
 #!/bin/bash
-# Qemu script for installing booting an install .iso with a bare disk
+# Qemu script for installing booting an install .iso with a raw USB disk
 set -e
 
 ISO_LOCATION="$1"
@@ -20,7 +20,8 @@ if [[ "$transport" != "usb" ]]; then
 	exit 1
 fi
 
-QEMUARGS=(-enable-kvm -boot d -m 512 -L . --bios /usr/share/ovmf/x64/OVMF_CODE.fd)
+QEMUARGS=(-enable-kvm -smp 2 -boot d -m 2G -L . --bios /usr/share/ovmf/x64/OVMF_CODE.fd
+	-usb -device usb-tablet)
 sudo qemu-system-x86_64 -drive "format=raw,file=$DISK" \
 	-drive "format=raw,media=cdrom,readonly,file=$ISO_LOCATION" \
 	"${QEMUARGS[@]}"
