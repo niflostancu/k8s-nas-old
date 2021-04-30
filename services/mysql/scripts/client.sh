@@ -13,7 +13,7 @@ json_escape() {
 args="-i --tty --rm"
 #args="--dry-run -o yaml"
 
-kubectl run mysql-client $args --generator=run-pod/v1 --restart=Never --overrides='
+kubectl run mysql-client $args --restart=Never --overrides='
 {"spec": {
   "containers": [{
     "name": "mysql-client",

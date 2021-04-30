@@ -10,7 +10,7 @@ upgrade:
 	helm upgrade "$(DEPLOYMENT_NAME)" stable/mysql -f helm-values.yaml
 
 helm_repo:
-	helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+	helm repo add stable https://charts.helm.sh/stable
 
 get_password:
 	kubectl get secret --namespace default "$(DEPLOYMENT_NAME)" \

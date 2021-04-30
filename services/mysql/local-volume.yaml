@@ -25,7 +25,7 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - nebula-k8s
+                - nebula
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
