@@ -5,6 +5,7 @@ global:
 
 replicaCount: 1
 
+namespace: kube-system
 installCRDs: true
 
 # Optional additional arguments
