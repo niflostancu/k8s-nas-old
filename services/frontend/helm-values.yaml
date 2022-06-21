@@ -1,6 +1,8 @@
 # ingress-nginx default values
 # https://github.com/kubernetes/ingress-nginx/blob/master/charts/ingress-nginx/values.yaml
 controller:
+  ## use it by default
+  setAsDefaultIngress: true
 
   ## The name of the Ingress controller daemonset or deployment.
   name: frontend
@@ -14,6 +16,10 @@ controller:
   # custom configuration options https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
   config: {}
 
+  # yes please
+  enableSnippets: true
+
+  #TODO: set inside <*.local.yaml> to the letsencrypt certificate name
   #extraArgs:
   #   default-ssl-certificate: "<namespace>/<secret_name>"
 
@@ -27,7 +33,6 @@ controller:
   replicaCount: 1
 
   service:
-    enabled: true
     ## The type of service to create for the Ingress controller.
     type: NodePort
     ## The value Local preserves the client source IP.
