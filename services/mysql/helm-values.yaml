@@ -1,5 +1,5 @@
 ## Helm values for stable/mysql
-
+# TODO: create `helm-values.local.yaml` with your customizations
 image: mysql
 imageTag: 8
 
@@ -7,16 +7,6 @@ imageTag: 8
 ##
 ## Default: random 10 character string
 # mysqlRootPassword: testing
-
-## Create a database user
-##
-# mysqlUser:
-## Default: random 10 character string
-# mysqlPassword:
-
-## Create a database
-##
-# mysqlDatabase:
 
 ## Additionnal arguments that are passed to the MySQL container.
 ## For example use --default-authentication-plugin=mysql_native_password if older clients need to
@@ -42,13 +32,13 @@ existingSecret: "mysql"
 ## Persist data to a persistent volume
 persistence:
   enabled: true
-  existingClaim: nebula-mysql-data
+  existingClaim: mysql-data-storage
 
-## Configure resource requests and limits
-resources:
-  requests:
-    memory: 256Mi
-    cpu: 100m
+#TODO: Configure resource requests and limits
+# resources:
+#   requests:
+#     memory: 256Mi
+#     cpu: 100m
 
 livenessProbe:
   initialDelaySeconds: 120

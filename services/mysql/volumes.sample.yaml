@@ -1,0 +1,84 @@
+# TODO: Copy as `volumes.local.yaml` and adapt to your needs
+---
+# Main MySQL data volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-data-storage
+spec:
+  capacity:
+    storage: 20Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    # e.g., store inside the SSD
+    path: /var/nas-local/mysql/data
+  claimRef:
+    namespace: default
+    name: mysql-data-storage
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - mysql-data-storage
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-data-storage
+  namespace: default
+spec:
+  storageClassName: "local-storage"
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+---
+# Backup mysql volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-backup-storage
+spec:
+  capacity:
+    storage: 20Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    # e.g., store inside a RAID volume
+    path: /media/storage/mysql/backup
+  claimRef:
+    namespace: default
+    name: mysql-backup-storage
+  # nodeAffinity:  # TODO: bind to a specific node
+  #   required:
+  #     nodeSelectorTerms:
+  #       - matchExpressions:
+  #           - key: kubernetes.io/hostname
+  #             operator: In
+  #             values:
+  #               - my-nas
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-backup-storage
+  namespace: default
+spec:
+  storageClassName: "local-storage"
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+

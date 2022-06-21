@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-mariadb
+  namespace: default
+spec:
+  schedule: "0 19 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: mysql-backup
+              image: niflostancu/mysql-backup
+              volumeMounts:
+                - mountPath: /var/backup/
+                  name: backup-vol
+              env:
+                - name: "MYSQL_BACKUP_HOST"
+                  value: "mysql"
+                - name: "MYSQL_BACKUP_USER"
+                  value: "root"
+                - name: MYSQL_BACKUP_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: mysql
+                      key: mysql-root-password
+          volumes:
+            - name: backup-vol
+              persistentVolumeClaim:
+                claimName: mysql-backup-storage
+          restartPolicy: Never
+

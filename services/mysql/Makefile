@@ -4,10 +4,19 @@ SHELL=/bin/bash
 install:
 	kubectl create secret generic mysql --namespace default \
 		--from-file=mysql-root-password=<(read -s -p "Enter root password: " p; echo -n "$$p")
-	helm install "$(DEPLOYMENT_NAME)" stable/mysql -f helm-values.yaml
+	helm install "$(DEPLOYMENT_NAME)" stable/mysql \
+		-f helm-values.yaml -f helm-values.local.yaml
+
+volumes:
+	kubectl apply -f "volumes.local.yaml"
+
+cron:
+	[ -f "backup-cron.local.yaml" ] && kubectl apply -f "backup-cron.yaml" || \
+		kubectl apply -f "backup-cron.yaml"
 
 upgrade:
-	helm upgrade "$(DEPLOYMENT_NAME)" stable/mysql -f helm-values.yaml
+	helm upgrade "$(DEPLOYMENT_NAME)" stable/mysql \
+		-f helm-values.yaml -f helm-values.local.yaml
 
 helm_repo:
 	helm repo add stable https://charts.helm.sh/stable
