@@ -1,9 +1,10 @@
+# Copy as `volumes.local.yaml` and adapt to your needs
 ---
 # Definition of the volumes and claims used for seafile
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nebula-seafile
+  name: seafile-local-storage
 spec:
   capacity:
     storage: 500Gi
@@ -13,24 +14,24 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: local-storage
   local:
-    # store inside big raid volumes
-    path: /media/storage/var/lib/seafile
+    # TODO: local storage path
+    path: /media/storage/seafile
   claimRef:
     namespace: default
-    name: nebula-seafile
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - nebula
+    name: seafile-local-storage
+  # nodeAffinity:  # TODO: bind to a specific node
+  #   required:
+  #     nodeSelectorTerms:
+  #       - matchExpressions:
+  #           - key: kubernetes.io/hostname
+  #             operator: In
+  #             values:
+  #               - my-nas
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nebula-seafile
+  name: seafile-local-storage
   namespace: default
 spec:
   storageClassName: "local-storage"
