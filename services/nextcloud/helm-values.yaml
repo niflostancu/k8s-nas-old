@@ -1,0 +1,136 @@
+image:
+  repository: niflostancu/nextcloud-uid
+  tag: latest
+  pullPolicy: Always
+
+nextcloud:
+  # TODO: your hosting domain
+  #host: cloud.example.com
+  ## TODO: create the admin secret (check Makefile)
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-admin
+    passwordKey: password
+    usernameKey: username
+    # smtpUsernameKey: smtp_username
+    # smtpPasswordKey: smtp_password
+  # disable automatic updates
+  update: 0
+
+  # If web server is not binding default port, you can define it
+  # containerPort: 8080
+  datadir: /var/www/html/data
+
+  # TODO: if you want to send mails, configure your SMTP server inside *.local.yaml
+  mail:
+    enabled: false
+    fromAddress: user
+    domain: domain.com
+    smtp:
+      host: domain.com
+      secure: ssl
+      port: 465
+      authtype: LOGIN
+      name: user
+      password: pass
+
+  # Default config files
+  # IMPORTANT: Will be used only if you put extra configs, otherwise default will come from nextcloud itself
+  # Default confgurations can be found here: https://github.com/nextcloud/docker/tree/master/24/apache/config
+  defaultConfigs:
+    # To protect /var/www/html/config
+    .htaccess: true
+    # Redis default configuration
+    redis.config.php: true
+    # Apache configuration for rewrite urls
+    apache-pretty-urls.config.php: true
+    # Define APCu as local cache
+    apcu.config.php: true
+    # Apps directory configs
+    apps.config.php: true
+    # Used for auto configure database
+    autoconfig.php: true
+    # SMTP default configuration
+    smtp.config.php: true
+  # Extra config files created in /var/www/html/config/
+  # ref: https://docs.nextcloud.com/server/15/admin_manual/configuration_server/config_sample_php_parameters.html#multiple-config-php-file
+  configs:
+    my.config.php: |-
+      <?php
+      $CONFIG = array (
+        'trusted_proxies' => ['10.42.0.0/16'],
+        'overwriteprotocol' => 'https',
+      );
+  # PHP Configuration files
+  # Will be injected in /usr/local/etc/php/conf.d for apache image and in /usr/local/etc/php-fpm.d when nginx.enabled: true
+  phpConfigs:
+    opcache.ini: |-
+      opcache.enable=1
+      opcache.interned_strings_buffer=8
+      opcache.max_accelerated_files=10000
+      opcache.memory_consumption=128
+      opcache.save_comments=1
+      opcache.revalidate_freq=10
+
+internalDatabase:
+  enabled: false
+
+externalDatabase:
+  enabled: true
+  type: mysql
+  host: mysql
+  database: nextcloud
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-mysql
+    usernameKey: mysql-user
+    passwordKey: mysql-password
+
+redis:
+  enabled: true
+  replica:
+    replicaCount: 1
+
+persistence:
+  # Nextcloud Data (/var/www/html)
+  enabled: true
+  annotations: {}
+  existingClaim: nextcloud-data-storage
+
+ingress:
+  # use the `ingress-nginx` frontend
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+    nginx.ingress.kubernetes.io/server-snippet: |-
+      server_tokens off;
+      proxy_hide_header X-Powered-By;
+      rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
+      rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+      rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+      location = /.well-known/carddav {
+        return 301 $scheme://$host/remote.php/dav;
+      }
+      location = /.well-known/caldav {
+        return 301 $scheme://$host/remote.php/dav;
+      }
+      location = /robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+      }
+      location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+        deny all;
+      }
+      location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
+        deny all;
+      }
+  # tls:
+  #   - hosts: ["my-nas.example.com"]
+  #     secretName: tls-example-com
+
+nginx:
+  enabled: false
+

@@ -1,0 +1,41 @@
+---
+# Definition of the volumes and claims used for nextcloud
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nextcloud-data-storage
+spec:
+  capacity:
+    storage: 500Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    # TODO: local storage path (preferrably inside a big RAID volume)
+    path: /media/storage/nextcloud
+  claimRef:
+    namespace: default
+    name: nextcloud-data-storage
+  # nodeAffinity:  # TODO: bind to a specific node
+  #   required:
+  #     nodeSelectorTerms:
+  #       - matchExpressions:
+  #           - key: kubernetes.io/hostname
+  #             operator: In
+  #             values:
+  #               - my-nas
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-data-storage
+  namespace: default
+spec:
+  storageClassName: "local-storage"
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
