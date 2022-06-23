@@ -1,0 +1,43 @@
+---
+# Definition of the volumes and claims used for Syncthing
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: syncthing-data-storage
+spec:
+  capacity:
+    storage: 500Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    # store inside raid volume
+    path: /media/storage/syncthing
+  claimRef:
+    namespace: default
+    name: syncthing-data-storage
+  # nodeAffinity: # TODO: bind to a specific node
+  #   required:
+  #     nodeSelectorTerms:
+  #       - matchExpressions:
+  #           - key: kubernetes.io/hostname
+  #             operator: In
+  #             values:
+  #               - my-nas
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: syncthing-data-storage
+  namespace: default
+spec:
+  storageClassName: "local-storage"
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+
+

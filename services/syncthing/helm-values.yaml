@@ -1,0 +1,17 @@
+# environment variables
+env:
+  TZ: UTC
+  PUID: "1000"
+  PGID: "1000"
+  STGUIADDRESS: "0.0.0.0:8384"
+
+image:
+  pullPolicy: Always
+
+persistence:
+  data:
+    enabled: true
+    type: pvc
+    existingClaim: syncthing-data-storage
+    mountPath: /var/syncthing
+
